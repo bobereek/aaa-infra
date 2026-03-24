@@ -1,0 +1,27 @@
+services:
+  server:
+    build: .
+    image: server:0.0.1
+    container_name: server
+    ports:
+      - "8080:8080"
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:v2.40.7
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  grafana:
+    image: grafana/grafana:9.4.2
+    container_name: grafana
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./grafana/config.ini:/etc/grafana/grafana.ini
+      - ./grafana/config.ini:/etc/grafana/grafana.ini
+      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    restart: always
