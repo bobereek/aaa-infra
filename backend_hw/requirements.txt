@@ -1,0 +1,6 @@
+fastapi[standard]==0.115.0
+httpx
+numpy==1.26.4
+pillow==10.2.0
+torch==1.13.1+cpu
+torchvision==0.14.1+cpu
