@@ -1,7 +1,11 @@
+import logging
+
 from fastapi import FastAPI, status, HTTPException
 from transformers import AutoModel, AutoTokenizer
 import torch
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger(__name__)
 
 models = {}
 
@@ -47,5 +51,6 @@ def embed(input: str):
 
         return {"embedding": embedding, "status": "success"}
 
-    except Exception:
+    except Exception as e:
+        logger.exception("Unexpected error while generating embedding: %s", e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
