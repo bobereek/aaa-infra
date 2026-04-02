@@ -11,6 +11,7 @@ async def lifespan(app: FastAPI):
     model_name = "sergeyzh/rubert-mini-frida"
     models["tokenizer"] = AutoTokenizer.from_pretrained(model_name)
     models["model"] = AutoModel.from_pretrained(model_name)
+    models["model"].eval()
     yield
     models.clear()
 
@@ -46,5 +47,5 @@ def embed(input: str):
 
         return {"embedding": embedding, "status": "success"}
 
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"ERROR: {e}")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
