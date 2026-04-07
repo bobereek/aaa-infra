@@ -1,0 +1,75 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
+on:
+  push:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        ports:
+          - 6379:6379
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip poetry
+        make init
+
+    - name: Linters
+      run: |
+        make lint
+
+    # Opens debug ssh session
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+
+    - name: Test with pytest
+      run: |
+        make ci-test
+        
+      env:
+        PGHOST: localhost
+        PGUSER: postgres
+        PGDATABASE: postgres
+        PGPASSWORD: postgres
