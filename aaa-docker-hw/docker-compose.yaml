@@ -5,6 +5,8 @@ services:
     container_name: server
     ports:
       - "8080:8080"
+    networks:
+      - webnet
     restart: always
 
   prometheus:
@@ -12,16 +14,24 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - webnet
     restart: always
 
   grafana:
     image: grafana/grafana:9.4.2
     container_name: grafana
     ports:
-      - "3030:3030"
+      - "3000:3000"
     volumes:
-      - ./grafana/config.ini:/etc/grafana/grafana.ini
-      - ./grafana/config.ini:/etc/grafana/grafana.ini
-      - ./grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./config.ini:/etc/grafana/grafana.ini
+      - ./dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml
+      - ./dashboards:/var/lib/grafana/dashboards
+      - ./datasource.yml:/etc/grafana/provisioning/datasources/default.yaml
+    networks:
+      - webnet
     restart: always
+
+networks:
+  webnet:
+    driver: bridge

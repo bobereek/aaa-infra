@@ -43,10 +43,10 @@ docker run \
 # run grafana
 docker run \
      --name=grafana \
-    -v $(pwd)/grafana/config.ini:/etc/grafana/grafana.ini \
-    -v $(pwd)/grafana/datasource.yml:/etc/grafana/provisioning/datasources/default.yaml \
-    -v $(pwd)/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml \
-    -v $(pwd)/grafana/dashboards:/var/lib/grafana/dashboards \
+    -v $(pwd)/config.ini:/etc/grafana/grafana.ini \
+    -v $(pwd)/datasource.yml:/etc/grafana/provisioning/datasources/default.yaml \
+    -v $(pwd)/dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml \
+    -v $(pwd)/dashboards:/var/lib/grafana/dashboards \
     -d \
     --rm \
     -p 3000:3000 \
