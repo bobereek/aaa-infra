@@ -1,0 +1,37 @@
+services:
+  server:
+    build: .
+    image: server:0.0.1
+    container_name: server
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:v2.40.7
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - webnet
+    restart: always
+
+  grafana:
+    image: grafana/grafana:9.4.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.ini:/etc/grafana/grafana.ini
+      - ./dashboard.yml:/etc/grafana/provisioning/dashboards/default.yaml
+      - ./dashboards:/var/lib/grafana/dashboards
+      - ./datasource.yml:/etc/grafana/provisioning/datasources/default.yaml
+    networks:
+      - webnet
+    restart: always
+
+networks:
+  webnet:
+    driver: bridge
